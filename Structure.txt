@@ -1,0 +1,53 @@
+samplestore/
+├── app/
+│   ├── (tabs)/                    # Tab-based navigation group
+│   │   ├── _layout.tsx           # Tab layout with bottom navigation
+│   │   ├── index.tsx             # Store tab (main products page)
+│   │   ├── cart.tsx              # Cart tab
+│   │   └── settings.tsx          # Settings tab
+│   ├── product/
+│   │   └── [id].tsx              # Dynamic product detail page
+│   ├── checkout/
+│   │   └── index.tsx             # Checkout process
+│   ├── _layout.tsx               # Root layout
+│   └── +not-found.tsx           # 404 page
+├── components/                    # Reusable UI components
+│   ├── ui/                       # Basic UI components
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   ├── Card.tsx
+│   │   └── Badge.tsx
+│   ├── store/                    # Store-specific components
+│   │   ├── ProductCard.tsx
+│   │   ├── ProductList.tsx
+│   │   ├── CategoryFilter.tsx
+│   │   └── SearchBar.tsx
+│   ├── cart/                     # Cart-specific components
+│   │   ├── CartItem.tsx
+│   │   ├── CartSummary.tsx
+│   │   └── EmptyCart.tsx
+│   └── layout/                   # Layout components
+│       ├── Header.tsx
+│       └── Container.tsx
+├── contexts/                      # React Context for state management
+│   ├── CartContext.tsx
+│   └── ProductContext.tsx
+├── hooks/                        # Custom React hooks
+│   ├── useCart.ts
+│   ├── useProducts.ts
+│   └── useAsyncStorage.ts
+├── types/                        # TypeScript type definitions
+│   ├── product.ts
+│   ├── cart.ts
+│   └── index.ts
+├── data/                         # Mock data and API functions
+│   ├── products.ts               # Sample product data
+│   └── api.ts                    # API utility functions
+├── utils/                        # Utility functions
+│   ├── currency.ts               # Price formatting
+│   ├── storage.ts                # AsyncStorage helpers
+│   └── validation.ts             # Form validation
+└── constants/                    # App constants
+    ├── Colors.ts
+    ├── Layout.ts
+    └── Products.ts
