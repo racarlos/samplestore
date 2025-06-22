@@ -117,9 +117,14 @@ export function useCart() {
 		});
 	}, []);
 
-	const clearCart = useCallback(() => {
-		setCart(initialCart);
-	}, []);
+	const clearCart = async () => {
+		try {
+			await AsyncStorage.removeItem("cart");
+			setCart(initialCart);
+		} catch (error) {
+			console.error("Error clearing cart from AsyncStorage:", error);
+		}
+	};
 
 	return {
 		cart,

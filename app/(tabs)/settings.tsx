@@ -28,8 +28,8 @@ export default function Settings() {
 			await AsyncStorage.clear();
 			console.log("AsyncStorage cleared");
 
-			clearCart();
-			resetToSeedData();
+			await clearCart();
+			await resetToSeedData();
 		} catch (error) {
 			console.error("Error clearing data:", error);
 		} finally {
@@ -50,7 +50,6 @@ export default function Settings() {
 			icon: "pricetag-outline",
 			subtitle: "Show available discount codes",
 			action: () => toggleSection("promos"),
-			expandable: true,
 			loading: false,
 		},
 		{
@@ -58,7 +57,6 @@ export default function Settings() {
 			icon: "time-outline",
 			subtitle: "View past orders",
 			action: () => toggleSection("orderHistory"),
-			expandable: true,
 			loading: false,
 		},
 		{
@@ -66,6 +64,7 @@ export default function Settings() {
 			icon: "trash-outline",
 			subtitle: "Delete all app data",
 			action: () => toggleSection("clearData"),
+			color: "red",
 			expandable: true,
 			loading: isClearing,
 		},
@@ -104,7 +103,7 @@ export default function Settings() {
 								onPress={item.action}
 								disabled={item.loading}
 							>
-								<View className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center">
+								<View className={`w-10 h-10 bg-gray-100 rounded-full items-center justify-center`}>
 									{item.loading ? (
 										<Ionicons name="refresh" size={20} color="#6B7280" />
 									) : (
@@ -206,7 +205,7 @@ export default function Settings() {
 
 							{/* Expandable Content for Clear All Data */}
 							{item.title === "Clear All Data" && expandedSections.clearData && (
-								<View className="bg-red-50 border-t border-red-100">
+								<View className="">
 									<View className="p-4">
 										<View className="bg-red-100 border border-red-200 rounded-lg p-4 mb-4">
 											<View className="flex-row items-start">
@@ -214,10 +213,10 @@ export default function Settings() {
 												<View className="flex-1">
 													<Text className="text-red-800 font-semibold mb-2">Warning</Text>
 													<Text className="text-red-700 text-sm leading-5">
-														This action will permanently delete all app data including:
+														This action will clear async storage. Used for debugging
 													</Text>
 													<Text className="text-red-700 text-sm leading-5 mt-1">• Shopping cart items</Text>
-													<Text className="text-red-700 text-sm leading-5">• Product modifications</Text>
+													<Text className="text-red-700 text-sm leading-5">• Products List</Text>
 													<Text className="text-red-700 text-sm font-semibold mt-2">This action cannot be undone.</Text>
 												</View>
 											</View>
