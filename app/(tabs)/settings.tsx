@@ -28,13 +28,9 @@ export default function Settings() {
 	};
 
 	const settingsItems = [
-		{ title: "Account", icon: "person-outline", subtitle: "Manage your account" },
-		{ title: "Notifications", icon: "notifications-outline", subtitle: "Push notifications" },
-		{ title: "Payment Methods", icon: "card-outline", subtitle: "Manage cards" },
-		{ title: "Shipping Address", icon: "location-outline", subtitle: "Delivery addresses" },
 		{ title: "Order History", icon: "time-outline", subtitle: "View past orders" },
-		{ title: "Help & Support", icon: "help-circle-outline", subtitle: "Get assistance" },
-		{ title: "About", icon: "information-circle-outline", subtitle: "App information" },
+		{ title: "Reset Products", icon: "refresh", subtitle: "Reset products to default" },
+		{ title: "Clear All Data", icon: "trash-outline", subtitle: "Delete all app data" },
 	];
 
 	return (
@@ -79,48 +75,6 @@ export default function Settings() {
 						</TouchableOpacity>
 					))}
 				</View>
-
-				{/* Data Management Section */}
-				<View className="bg-white rounded-lg border border-gray-200 mt-4">
-					<Text className="p-4 font-medium text-gray-900 border-b border-gray-100">Data Management</Text>
-
-					{/* Reset Products */}
-					<TouchableOpacity
-						className="p-4 flex-row items-center border-b border-gray-100"
-						onPress={handleResetProducts}
-						disabled={isResetting}
-					>
-						<View className="w-10 h-10 bg-orange-100 rounded-full items-center justify-center">
-							<Ionicons name="refresh" size={20} color="#F97316" />
-						</View>
-						<View className="ml-3 flex-1">
-							<Text className="font-medium text-gray-900">Reset Products</Text>
-							<Text className="text-sm text-gray-600">Restore default product data</Text>
-						</View>
-						{isResetting ? (
-							<Text className="text-blue-600 text-sm">Resetting...</Text>
-						) : (
-							<Ionicons name="chevron-forward" size={16} color="#6B7280" />
-						)}
-					</TouchableOpacity>
-
-					{/* Clear All Data */}
-					<TouchableOpacity className="p-4 flex-row items-center">
-						<View className="w-10 h-10 bg-red-100 rounded-full items-center justify-center">
-							<Ionicons name="trash-outline" size={20} color="#EF4444" />
-						</View>
-						<View className="ml-3 flex-1">
-							<Text className="font-medium text-gray-900">Clear All Data</Text>
-							<Text className="text-sm text-gray-600">Delete all app data</Text>
-						</View>
-						<Ionicons name="chevron-forward" size={16} color="#6B7280" />
-					</TouchableOpacity>
-				</View>
-
-				{/* Logout Button */}
-				<TouchableOpacity className="bg-red-50 p-4 rounded-lg border border-red-200 mt-6">
-					<Text className="text-red-600 text-center font-semibold">Log Out</Text>
-				</TouchableOpacity>
 			</ScrollView>
 		</View>
 	);

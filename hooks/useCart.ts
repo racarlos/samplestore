@@ -1,7 +1,7 @@
 import { Cart, Product } from "@/data/interfaces";
 import { toFixed } from "@/utils/math-utilts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 // Initial empty cart
 const initialCart: Cart = {
@@ -13,6 +13,7 @@ export function useCart() {
 	// Local state for cart
 	const [cart, setCart] = useState<Cart>(initialCart);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isInitialized, setIsInitialized] = useState(false);
 
 	const itemCount = useMemo(() => cart.items.reduce((count, item) => count + item.quantity, 0), [cart.items]);
 
@@ -25,12 +26,11 @@ export function useCart() {
 	// 	isLoading: isStorageLoading,
 	// } = useAsyncStorage<Cart>("cart", initialCart);
 
-	// Load cart from AsyncStorage on initial render
+	// Load cart from AsyncStorage on mount
 	useEffect(() => {
 		const loadCart = async () => {
 			try {
 				console.log("Loading cart from AsyncStorage");
-				setIsLoading(true);
 				const item = await AsyncStorage.getItem("cart");
 
 				if (item) {
@@ -41,89 +41,85 @@ export function useCart() {
 				}
 			} catch (error) {
 				console.error("Error loading cart from AsyncStorage:", error);
+				setCart(initialCart);
 			} finally {
 				setIsLoading(false);
+				setIsInitialized(true);
 			}
 		};
 
 		loadCart();
 	}, []);
 
-	// Whenever the cart changes, save it to AsyncStorage
+	// Save cart to AsyncStorage when it changes (but not during initial load)
 	useEffect(() => {
+		if (!isInitialized) {
+			return; // Don't save during initial load
+		}
+
 		const saveCart = async () => {
 			try {
-				setIsLoading(true);
-				console.log("Saving cart to AsyncStorage");
+				console.log("Saving cart to AsyncStorage", cart);
 				await AsyncStorage.setItem("cart", JSON.stringify(cart));
 			} catch (error) {
 				console.error("Error saving cart to AsyncStorage:", error);
-			} finally {
-				setIsLoading(false);
 			}
 		};
 
 		saveCart();
-	}, [cart]);
+	}, [cart, isInitialized]);
 
-	// Add item to cart
-	const addToCart = (product: Product, quantity: number = 1) => {
-		try {
-			setIsLoading(true);
-
-			// Compute the new total
-			const newTotal = cart.items.reduce((sum, item) => sum + toFixed(item.product.price * item.quantity), 0);
-			// Append the new item to the cart
-			const updatedCart = { items: [...cart.items, { product, quantity }], total: newTotal };
-			setCart(updatedCart);
-		} catch (error) {
-			console.error("Error adding item to cart:", error);
-		} finally {
-			setIsLoading(false);
-		}
+	const calculateTotal = (items: any[]) => {
+		return toFixed(items.reduce((sum, item) => sum + item.product.price * item.quantity, 0));
 	};
 
-	// Remove item from cart
-	const removeFromCart = (productId: string) => {
-		try {
-			setIsLoading(true);
-			const updatedItems = cart.items.filter((item) => item.product.id !== productId);
-			const newTotal = updatedItems.reduce((sum, item) => sum + toFixed(item.product.price * item.quantity), 0);
-			const updatedCart = { ...cart, items: updatedItems, total: newTotal };
-			setCart(updatedCart);
-		} catch (error) {
-			console.error("Error removing item from cart:", error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
+	const addToCart = useCallback((product: Product, quantity: number = 1) => {
+		setCart((currentCart) => {
+			const existingItemIndex = currentCart.items.findIndex((item) => item.product.id === product.id);
 
-	// Update item quantity
-	const updateQuantity = (productId: string, quantity: number) => {
-		try {
-			setIsLoading(true);
-			if (quantity <= 0) {
-				removeFromCart(productId);
-				return;
+			let updatedItems;
+
+			if (existingItemIndex !== -1) {
+				updatedItems = currentCart.items.map((item, index) =>
+					index === existingItemIndex ? { ...item, quantity: item.quantity + quantity } : item,
+				);
+			} else {
+				updatedItems = [...currentCart.items, { product, quantity }];
 			}
 
-			const updatedItems = cart.items.map((item) => (item.product.id === productId ? { ...item, quantity } : item));
-			const newTotal = updatedItems.reduce((sum, item) => sum + toFixed(item.product.price * item.quantity), 0);
-			const updatedCart = { ...cart, items: updatedItems, total: newTotal };
-			setCart(updatedCart);
-		} catch (error) {
-			console.error("Error updating item quantity:", error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
+			const newTotal = calculateTotal(updatedItems);
+			return { items: updatedItems, total: newTotal };
+		});
+	}, []);
 
-	// Clear the entire cart
-	const clearCart = () => {
-		setIsLoading(true);
+	const removeFromCart = useCallback((productId: string) => {
+		setCart((currentCart) => {
+			const updatedItems = currentCart.items.filter((item) => item.product.id !== productId);
+			const newTotal = calculateTotal(updatedItems);
+			return { items: updatedItems, total: newTotal };
+		});
+	}, []);
+
+	const updateQuantity = useCallback((productId: string, quantity: number) => {
+		setCart((currentCart) => {
+			if (quantity <= 0) {
+				// Inline the remove logic instead of calling removeFromCart
+				const updatedItems = currentCart.items.filter((item) => item.product.id !== productId);
+				const newTotal = calculateTotal(updatedItems);
+				return { items: updatedItems, total: newTotal };
+			}
+
+			const updatedItems = currentCart.items.map((item) =>
+				item.product.id === productId ? { ...item, quantity } : item,
+			);
+			const newTotal = calculateTotal(updatedItems);
+			return { items: updatedItems, total: newTotal };
+		});
+	}, []);
+
+	const clearCart = useCallback(() => {
 		setCart(initialCart);
-		setIsLoading(false);
-	};
+	}, []);
 
 	return {
 		cart,

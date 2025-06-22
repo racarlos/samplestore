@@ -1,12 +1,12 @@
-import { useCart } from "@/hooks/useCart";
 import { useProducts } from "@/hooks/useProducts";
+import { useCartContext } from "@/providers/CartProvider";
 import { useState } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Store() {
 	const [search, setSearch] = useState("");
 	const { products, isLoading: isProductsLoading } = useProducts();
-	const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
+	const { cart, addToCart, updateQuantity, removeFromCart } = useCartContext();
 
 	const filteredProducts = products.filter((product) =>
 		product.productName.toLowerCase().includes(search.toLowerCase()),

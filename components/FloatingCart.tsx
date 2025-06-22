@@ -1,11 +1,11 @@
-import { useCart } from "@/hooks/useCart";
+import { useCartContext } from "@/providers/CartProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useMemo, useRef } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 
 export default function FloatingCart() {
-	const { cart, itemCount } = useCart();
+	const { cart, itemCount } = useCartContext();
 	const scaleAnim = useRef(new Animated.Value(1)).current;
 
 	// Format the total price to 2 decimal places

@@ -1,19 +1,13 @@
-import { useCart } from "@/hooks/useCart";
+import { useCartContext } from "@/providers/CartProvider";
 import { router } from "expo-router";
-import React, { useMemo } from "react";
+import React from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Cart() {
-	const { cart, removeFromCart, updateQuantity, clearCart, isLoading: isCartLoading } = useCart();
+	const { cart, removeFromCart, updateQuantity, clearCart, isLoading: isCartLoading } = useCartContext();
 
 	// If cart is empty, show empty state
 	const isCartEmpty = cart.items.length === 0;
-	const totalPrice = useMemo(
-		() => cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
-		[cart.items],
-	);
-
-	console.log("Cart: ", JSON.stringify(cart, null, 2));
 
 	return (
 		<View className="flex-1 bg-gray-50">
@@ -84,11 +78,11 @@ export default function Cart() {
 								<Text className="text-xl font-bold text-blue-600">${cart.total.toFixed(2)}</Text>
 							</View>
 							<View className="flex-row gap-2">
-								<TouchableOpacity className="flex-1 bg-gray-200 py-4 rounded-lg" onPress={clearCart}>
-									<Text className="text-gray-800 text-center font-semibold">Clear Cart</Text>
+								<TouchableOpacity className="flex-1 bg-gray-200 py-2 rounded-lg" onPress={clearCart}>
+									<Text className="text-gray-800 text-center font-semibold text-sm">Clear Cart</Text>
 								</TouchableOpacity>
-								<TouchableOpacity className="flex-1 bg-blue-600 py-4 rounded-lg">
-									<Text className="text-white text-center font-semibold text-lg">Checkout</Text>
+								<TouchableOpacity className="flex-1 bg-blue-600 py-2 rounded-lg">
+									<Text className="text-white text-center font-semibold text-sm">Checkout</Text>
 								</TouchableOpacity>
 							</View>
 						</View>
