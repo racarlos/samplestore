@@ -3,7 +3,7 @@ import { Product } from "./interfaces";
 
 export const SEED_PRODUCTS: Product[] = [
 	{
-		id: "1",
+		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
 		image: "https://picsum.photos/300/300?random=1",
 		description: faker.commerce.productDescription(),
@@ -11,7 +11,7 @@ export const SEED_PRODUCTS: Product[] = [
 		quantity: faker.number.int({ min: 1, max: 5 }),
 	},
 	{
-		id: "2",
+		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
 		image: "https://picsum.photos/300/300?random=2",
 		description: faker.commerce.productDescription(),
@@ -19,7 +19,7 @@ export const SEED_PRODUCTS: Product[] = [
 		quantity: faker.number.int({ min: 1, max: 5 }),
 	},
 	{
-		id: "3",
+		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
 		image: "https://picsum.photos/300/300?random=3",
 		description: faker.commerce.productDescription(),
@@ -27,7 +27,7 @@ export const SEED_PRODUCTS: Product[] = [
 		quantity: faker.number.int({ min: 1, max: 5 }),
 	},
 	{
-		id: "4",
+		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
 		image: "https://picsum.photos/300/300?random=4",
 		description: faker.commerce.productDescription(),
@@ -35,7 +35,7 @@ export const SEED_PRODUCTS: Product[] = [
 		quantity: faker.number.int({ min: 1, max: 5 }),
 	},
 	{
-		id: "5",
+		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
 		image: "https://picsum.photos/300/300?random=5",
 		description: faker.commerce.productDescription(),
@@ -43,7 +43,7 @@ export const SEED_PRODUCTS: Product[] = [
 		quantity: faker.number.int({ min: 1, max: 5 }),
 	},
 	{
-		id: "6",
+		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
 		image: "https://picsum.photos/300/300?random=6",
 		description: faker.commerce.productDescription(),

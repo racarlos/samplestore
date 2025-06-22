@@ -1,6 +1,5 @@
 import { Product } from "@/data/interfaces";
 import { useCart } from "@/hooks/useCart";
-import { Link } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 type ProductCardProps = {
@@ -20,15 +19,13 @@ export default function ProductCard({ product }: ProductCardProps) {
 
 	return (
 		<View className="w-full bg-white p-3 rounded-lg border border-gray-200 mb-4">
-			<Link href={`/product/${product.id}`} asChild>
-				<TouchableOpacity>
-					<Image source={{ uri: product.image }} style={{ height: 150, borderRadius: 8 }} />
-					<Text numberOfLines={1} className="text-gray-900 font-medium">
-						{product.productName}
-					</Text>
-					<Text className="text-gray-900 font-bold text-lg">${product.price}</Text>
-				</TouchableOpacity>
-			</Link>
+			<View>
+				<Image source={{ uri: product.image }} style={{ height: 150, borderRadius: 8 }} />
+				<Text numberOfLines={1} className="text-gray-900 font-medium">
+					{product.productName}
+				</Text>
+				<Text className="text-gray-900 font-bold text-lg">${product.price}</Text>
+			</View>
 
 			<Text className="text-gray-600 mb-2">{product.quantity} in stock</Text>
 
