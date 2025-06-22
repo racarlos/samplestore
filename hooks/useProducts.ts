@@ -1,5 +1,5 @@
 import { Product } from "@/data/interfaces";
-import { SEED_PRODUCTS } from "@/data/products";
+import { SEED_PRODUCTS } from "@/data/seed";
 import { useCallback, useEffect, useState } from "react";
 import { useAsyncStorage } from "./useAsyncStorage";
 

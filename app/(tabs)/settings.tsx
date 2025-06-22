@@ -1,36 +1,74 @@
+import { DISCOUNT_CODES, DUMMY_ORDERS } from "@/data/seed";
 import { useProducts } from "@/hooks/useProducts";
+import { useCartContext } from "@/providers/CartProvider";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Settings() {
+	const { clearCart } = useCartContext();
 	const { resetToSeedData } = useProducts();
-	const [isResetting, setIsResetting] = useState(false);
 
-	const handleResetProducts = () => {
-		Alert.alert(
-			"Reset Products",
-			"Are you sure you want to reset all products to default? This action cannot be undone.",
-			[
-				{ text: "Cancel", style: "cancel" },
-				{
-					text: "Reset",
-					style: "destructive",
-					onPress: async () => {
-						setIsResetting(true);
-						await resetToSeedData();
-						setIsResetting(false);
-						Alert.alert("Success", "Products have been reset to default values.");
-					},
-				},
-			],
-		);
+	const [isClearing, setIsClearing] = useState(false);
+	const [expandedSections, setExpandedSections] = useState<{
+		promos: boolean;
+		orderHistory: boolean;
+		clearData: boolean;
+	}>({
+		promos: false,
+		orderHistory: false,
+		clearData: false,
+	});
+
+	const handleClearAllData = async () => {
+		setIsClearing(true);
+		try {
+			// Clear AsyncStorage
+			await AsyncStorage.clear();
+			console.log("AsyncStorage cleared");
+
+			clearCart();
+			resetToSeedData();
+		} catch (error) {
+			console.error("Error clearing data:", error);
+		} finally {
+			setIsClearing(false);
+		}
+	};
+
+	const toggleSection = (section: "promos" | "orderHistory" | "clearData") => {
+		setExpandedSections((prev) => ({
+			...prev,
+			[section]: !prev[section],
+		}));
 	};
 
 	const settingsItems = [
-		{ title: "Order History", icon: "time-outline", subtitle: "View past orders" },
-		{ title: "Reset Products", icon: "refresh", subtitle: "Reset products to default" },
-		{ title: "Clear All Data", icon: "trash-outline", subtitle: "Delete all app data" },
+		{
+			title: "Promos",
+			icon: "pricetag-outline",
+			subtitle: "Show available discount codes",
+			action: () => toggleSection("promos"),
+			expandable: true,
+			loading: false,
+		},
+		{
+			title: "Order History",
+			icon: "time-outline",
+			subtitle: "View past orders",
+			action: () => toggleSection("orderHistory"),
+			expandable: true,
+			loading: false,
+		},
+		{
+			title: "Clear All Data",
+			icon: "trash-outline",
+			subtitle: "Delete all app data",
+			action: () => toggleSection("clearData"),
+			expandable: true,
+			loading: isClearing,
+		},
 	];
 
 	return (
@@ -60,19 +98,154 @@ export default function Settings() {
 				{/* Settings List */}
 				<View className="bg-white rounded-lg border border-gray-200">
 					{settingsItems.map((item, index) => (
-						<TouchableOpacity
-							key={item.title}
-							className={`p-4 flex-row items-center ${index !== settingsItems.length - 1 ? "border-b border-gray-100" : ""}`}
-						>
-							<View className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center">
-								<Ionicons name={item.icon as any} size={20} color="#6B7280" />
-							</View>
-							<View className="ml-3 flex-1">
-								<Text className="font-medium text-gray-900">{item.title}</Text>
-								<Text className="text-sm text-gray-600">{item.subtitle}</Text>
-							</View>
-							<Ionicons name="chevron-forward" size={16} color="#6B7280" />
-						</TouchableOpacity>
+						<View key={item.title}>
+							<TouchableOpacity
+								className={`p-4 flex-row items-center ${index !== settingsItems.length - 1 ? "border-b border-gray-100" : ""}`}
+								onPress={item.action}
+								disabled={item.loading}
+							>
+								<View className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center">
+									{item.loading ? (
+										<Ionicons name="refresh" size={20} color="#6B7280" />
+									) : (
+										<Ionicons name={item.icon as any} size={20} color="#6B7280" />
+									)}
+								</View>
+								<View className="ml-3 flex-1">
+									<Text className="font-medium text-gray-900">{item.title}</Text>
+									<Text className="text-sm text-gray-600">{item.subtitle}</Text>
+								</View>
+								{item.expandable ? (
+									<Ionicons
+										name={
+											(item.title === "Promos" && expandedSections.promos) ||
+											(item.title === "Order History" && expandedSections.orderHistory) ||
+											(item.title === "Clear All Data" && expandedSections.clearData)
+												? "chevron-down"
+												: "chevron-forward"
+										}
+										size={16}
+										color="#6B7280"
+									/>
+								) : (
+									<Ionicons name="chevron-forward" size={16} color="#6B7280" />
+								)}
+							</TouchableOpacity>
+
+							{/* Expandable Content for Promos */}
+							{item.title === "Promos" && expandedSections.promos && (
+								<View className="bg-gray-50 border-t border-gray-100">
+									<View className="p-4">
+										<Text className="text-sm font-semibold text-gray-700 mb-3">Available Discount Codes</Text>
+										{DISCOUNT_CODES.map((discount, idx) => (
+											<View
+												key={discount.code}
+												className={`bg-white p-3 rounded-lg border border-gray-200 ${idx > 0 ? "mt-2" : ""}`}
+											>
+												<View className="flex-row justify-between items-start">
+													<View className="flex-1">
+														<Text className="font-semibold text-green-600">{discount.code}</Text>
+														<Text className="text-sm text-gray-600 mt-1">{discount.description}</Text>
+														<Text className="text-xs text-gray-500 mt-1">
+															Type: {discount.discountType === "percentage" ? "Percentage" : "Fixed Amount"}
+														</Text>
+													</View>
+													<View className="bg-green-100 px-2 py-1 rounded">
+														<Text className="text-xs font-semibold text-green-800">
+															{discount.discountType === "percentage"
+																? `${discount.discount}%`
+																: `₱${discount.discount}`}
+														</Text>
+													</View>
+												</View>
+											</View>
+										))}
+									</View>
+								</View>
+							)}
+
+							{/* Expandable Content for Order History */}
+							{item.title === "Order History" && expandedSections.orderHistory && (
+								<View className="bg-gray-50 border-t border-gray-100">
+									<View className="p-4">
+										<Text className="text-sm font-semibold text-gray-700 mb-3">Recent Orders</Text>
+										{DUMMY_ORDERS.map((order, idx) => (
+											<View
+												key={order.id}
+												className={`bg-white p-3 rounded-lg border border-gray-200 ${idx > 0 ? "mt-2" : ""}`}
+											>
+												<View className="flex-row justify-between items-start">
+													<View className="flex-1">
+														<Text className="font-semibold text-gray-900">{order.orderNumber}</Text>
+														<Text className="text-sm text-gray-600 mt-1">
+															{new Date(order.date).toLocaleDateString()} • {order.items} items
+														</Text>
+														<View className="flex-row items-center mt-1">
+															<View
+																className={`px-2 py-1 rounded-full ${
+																	order.status === "Delivered" ? "bg-green-100" : "bg-yellow-100"
+																}`}
+															>
+																<Text
+																	className={`text-xs font-semibold ${
+																		order.status === "Delivered" ? "text-green-800" : "text-yellow-800"
+																	}`}
+																>
+																	{order.status}
+																</Text>
+															</View>
+														</View>
+													</View>
+													<Text className="font-bold text-gray-900">₱{order.total.toFixed(2)}</Text>
+												</View>
+											</View>
+										))}
+									</View>
+								</View>
+							)}
+
+							{/* Expandable Content for Clear All Data */}
+							{item.title === "Clear All Data" && expandedSections.clearData && (
+								<View className="bg-red-50 border-t border-red-100">
+									<View className="p-4">
+										<View className="bg-red-100 border border-red-200 rounded-lg p-4 mb-4">
+											<View className="flex-row items-start">
+												<Ionicons name="warning" size={20} color="#DC2626" style={{ marginTop: 2, marginRight: 8 }} />
+												<View className="flex-1">
+													<Text className="text-red-800 font-semibold mb-2">Warning</Text>
+													<Text className="text-red-700 text-sm leading-5">
+														This action will permanently delete all app data including:
+													</Text>
+													<Text className="text-red-700 text-sm leading-5 mt-1">• Shopping cart items</Text>
+													<Text className="text-red-700 text-sm leading-5">• Product modifications</Text>
+													<Text className="text-red-700 text-sm font-semibold mt-2">This action cannot be undone.</Text>
+												</View>
+											</View>
+										</View>
+
+										<TouchableOpacity
+											className={`w-full py-3 px-4 rounded-lg items-center justify-center ${
+												isClearing ? "bg-gray-400" : "bg-red-600"
+											}`}
+											onPress={handleClearAllData}
+											disabled={isClearing}
+										>
+											{isClearing ? (
+												<View className="flex-row items-center">
+													<Ionicons name="refresh" size={16} color="white" style={{ marginRight: 8 }} />
+													<Text className="text-white font-semibold">Clearing Data...</Text>
+												</View>
+											) : (
+												<View className="flex-row items-center">
+													<Ionicons name="trash" size={16} color="white" style={{ marginRight: 8 }} />
+													<Text className="text-white font-semibold">Clear All Data</Text>
+												</View>
+											)}
+										</TouchableOpacity>
+									</View>
+								</View>
+							)}
+						</View>
 					))}
 				</View>
 			</ScrollView>
