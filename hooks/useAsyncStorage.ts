@@ -25,11 +25,12 @@ export function useAsyncStorage<T>(key: string, initialValue: T) {
 		};
 
 		loadStoredValue();
-	}, [key, initialValue]);
+	}, []);
 
 	// Save to AsyncStorage
 	const setValue = async (value: T) => {
 		try {
+			setIsLoading(true);
 			// If value is a function, use the previous state
 			const valueToStore = value instanceof Function ? value(storedValue) : value;
 
@@ -40,6 +41,8 @@ export function useAsyncStorage<T>(key: string, initialValue: T) {
 			await AsyncStorage.setItem(key, JSON.stringify(valueToStore));
 		} catch (error) {
 			console.error(`Error saving ${key} to AsyncStorage:`, error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -50,6 +53,8 @@ export function useAsyncStorage<T>(key: string, initialValue: T) {
 			setStoredValue(initialValue);
 		} catch (error) {
 			console.error(`Error removing ${key} from AsyncStorage:`, error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 

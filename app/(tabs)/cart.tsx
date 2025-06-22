@@ -1,13 +1,19 @@
 import { useCart } from "@/hooks/useCart";
 import { router } from "expo-router";
-import React from "react";
+import React, { useMemo } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Cart() {
-	const { cart, removeFromCart, updateQuantity, clearCart, isLoading } = useCart();
+	const { cart, removeFromCart, updateQuantity, clearCart, isLoading: isCartLoading } = useCart();
 
 	// If cart is empty, show empty state
 	const isCartEmpty = cart.items.length === 0;
+	const totalPrice = useMemo(
+		() => cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
+		[cart.items],
+	);
+
+	console.log("Cart: ", JSON.stringify(cart, null, 2));
 
 	return (
 		<View className="flex-1 bg-gray-50">
@@ -16,7 +22,7 @@ export default function Cart() {
 				<Text className="text-2xl font-bold text-gray-900">Shopping Cart</Text>
 			</View>
 
-			{isLoading ? (
+			{isCartLoading ? (
 				<View className="flex-1 items-center justify-center">
 					<Text className="text-gray-500">Loading cart...</Text>
 				</View>
@@ -27,21 +33,21 @@ export default function Cart() {
 						{!isCartEmpty ? (
 							<View className="space-y-4">
 								{cart.items.map((item) => (
-									<View key={item.id} className="bg-white p-4 rounded-lg border border-gray-200">
+									<View key={item.product.id} className="bg-white p-4 rounded-lg border border-gray-200">
 										<View className="flex-row justify-between items-start">
 											<View className="flex-1">
-												<Image source={{ uri: item.image }} className="w-16 h-16 rounded-lg mb-2" />
-												<Text className="font-medium text-gray-900">{item.productName}</Text>
-												<Text className="text-blue-600 font-bold">${item.price}</Text>
+												<Image source={{ uri: item.product.image }} className="w-16 h-16 rounded-lg mb-2" />
+												<Text className="font-medium text-gray-900">{item.product.productName}</Text>
+												<Text className="text-blue-600 font-bold">${item.product.price}</Text>
 											</View>
 											<View className="flex-row items-center ml-4">
 												<TouchableOpacity
 													className="w-8 h-8 bg-gray-200 rounded-full items-center justify-center"
 													onPress={() => {
 														if (item.quantity === 1) {
-															removeFromCart(item.id);
+															removeFromCart(item.product.id);
 														} else {
-															updateQuantity(item.id, item.quantity - 1);
+															updateQuantity(item.product.id, item.quantity - 1);
 														}
 													}}
 												>
@@ -50,7 +56,7 @@ export default function Cart() {
 												<Text className="mx-3 font-medium">{item.quantity}</Text>
 												<TouchableOpacity
 													className="w-8 h-8 bg-blue-600 rounded-full items-center justify-center"
-													onPress={() => updateQuantity(item.id, item.quantity + 1)}
+													onPress={() => updateQuantity(item.product.id, item.quantity + 1)}
 												>
 													<Text className="text-white font-bold">+</Text>
 												</TouchableOpacity>
@@ -81,10 +87,7 @@ export default function Cart() {
 								<TouchableOpacity className="flex-1 bg-gray-200 py-4 rounded-lg" onPress={clearCart}>
 									<Text className="text-gray-800 text-center font-semibold">Clear Cart</Text>
 								</TouchableOpacity>
-								<TouchableOpacity
-									className="flex-1 bg-blue-600 py-4 rounded-lg"
-									onPress={() => router.push("/checkout")}
-								>
+								<TouchableOpacity className="flex-1 bg-blue-600 py-4 rounded-lg">
 									<Text className="text-white text-center font-semibold text-lg">Checkout</Text>
 								</TouchableOpacity>
 							</View>

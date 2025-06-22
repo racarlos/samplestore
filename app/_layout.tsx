@@ -6,8 +6,6 @@ export default function RootLayout() {
 		<Stack screenOptions={{ headerShown: false }}>
 			{/* Navigation Tabs */}
 			<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-			{/* Checkout */}
-			<Stack.Screen name="checkout" options={{ headerShown: true, title: "Checkout" }} />
 		</Stack>
 	);
 }

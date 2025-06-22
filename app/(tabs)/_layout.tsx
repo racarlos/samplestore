@@ -2,12 +2,12 @@ import FloatingCart from "@/components/FloatingCart";
 import { useCart } from "@/hooks/useCart";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React from "react";
+import React, { useMemo } from "react";
 import { Text, View } from "react-native";
 export default function TabLayout() {
 	const { cart } = useCart();
 
-	const totalCartQuantity = cart.items.reduce((acc, item) => acc + item.quantity, 0);
+	const totalCartQuantity = useMemo(() => cart.items.reduce((acc, item) => acc + item.quantity, 0), [cart.items]);
 
 	return (
 		<>

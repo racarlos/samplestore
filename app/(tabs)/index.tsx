@@ -1,13 +1,12 @@
 import { useCart } from "@/hooks/useCart";
 import { useProducts } from "@/hooks/useProducts";
-import { Link } from "expo-router";
 import { useState } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Store() {
 	const [search, setSearch] = useState("");
 	const { products, isLoading: isProductsLoading } = useProducts();
-	const { addToCart, updateQuantity, removeFromCart, cart } = useCart();
+	const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
 
 	const filteredProducts = products.filter((product) =>
 		product.productName.toLowerCase().includes(search.toLowerCase()),
@@ -52,21 +51,19 @@ export default function Store() {
 					) : (
 						<View className="flex-row flex-wrap justify-between gap-2">
 							{filteredProducts.map((product) => {
-								const cartQuantity = cart.items.find((item) => item.id === product.id)?.quantity || 0;
+								const cartQuantity = cart.items.find((item) => item.product.id === product.id)?.quantity || 0;
 								return (
 									<View key={product.id} className="w-[48%] bg-white p-3 rounded-lg border border-gray-200 mb-4">
-										<Link href={`/product/${product.id}`} asChild>
-											<TouchableOpacity>
-												<Image source={{ uri: product.image }} className="h-36 rounded-lg mb-2" />
+										<TouchableOpacity>
+											<Image source={{ uri: product.image }} className="h-36 rounded-lg mb-2" />
 
-												<Text numberOfLines={1} className="text-gray-900 font-medium">
-													{product.productName}
-												</Text>
-												<Text className="text-gray-900 font-bold text-lg">${product.price}</Text>
-											</TouchableOpacity>
-										</Link>
+											<Text numberOfLines={1} className="text-gray-900 font-medium">
+												{product.productName}
+											</Text>
+											<Text className="text-gray-900 font-bold text-lg">${product.price}</Text>
+										</TouchableOpacity>
 
-										<Text className="text-gray-600 mb-2">{product.quantity} in stock</Text>
+										<Text className="text-gray-600 mb-2">{product.stock} in stock</Text>
 
 										{/* Cart Controls */}
 										{cartQuantity === 0 ? (
