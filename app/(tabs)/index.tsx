@@ -73,7 +73,7 @@ export default function Store() {
 										) : (
 											<View className="flex-row items-center justify-between mt-2 bg-gray-100 rounded-lg p-1">
 												<TouchableOpacity
-													className="w-8 h-8 bg-gray-200 rounded-full items-center justify-center"
+													className="w-8 h-8 bg-blue-600 rounded-full items-center justify-center"
 													onPress={() => {
 														if (cartQuantity === 1) {
 															removeFromCart(product.id);
@@ -82,14 +82,17 @@ export default function Store() {
 														}
 													}}
 												>
-													<Text className="text-gray-600 font-bold">-</Text>
+													<Text className="text-white font-bold">-</Text>
 												</TouchableOpacity>
 
 												<Text className="font-medium text-gray-900">{cartQuantity}</Text>
 
 												<TouchableOpacity
-													className="w-8 h-8 bg-blue-600 rounded-full items-center justify-center"
+													className={`w-8 h-8 bg-blue-600 rounded-full items-center justify-center ${
+														product.stock <= cartQuantity ? "bg-gray-400" : ""
+													}`}
 													onPress={() => updateQuantity(product.id, cartQuantity + 1)}
+													disabled={product.stock <= cartQuantity}
 												>
 													<Text className="text-white font-bold">+</Text>
 												</TouchableOpacity>

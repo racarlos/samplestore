@@ -11,7 +11,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
 	// Check if product is in cart and get quantity
 	const getCartItemQuantity = (productId: string) => {
-		const cartItem = cart.items.find((item) => item.id === productId);
+		const cartItem = cart.items.find((item) => item.product.id === productId);
 		return cartItem ? cartItem.quantity : 0;
 	};
 
@@ -27,7 +27,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 				<Text className="text-gray-900 font-bold text-lg">${product.price}</Text>
 			</View>
 
-			<Text className="text-gray-600 mb-2">{product.quantity} in stock</Text>
+			<Text className="text-gray-600 mb-2">{product.stock} in stock</Text>
 
 			{/* Cart Controls */}
 			{cartQuantity === 0 ? (

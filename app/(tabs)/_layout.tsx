@@ -1,5 +1,4 @@
-import FloatingCart from "@/components/FloatingCart";
-import { useCartContext } from "@/providers";
+import { useCartContext } from "@/providers/CartProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React, { useMemo } from "react";
@@ -54,7 +53,6 @@ export default function TabLayout() {
 					}}
 				/>
 			</Tabs>
-			<FloatingCart />
 		</>
 	);
 }

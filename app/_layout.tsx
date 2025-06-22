@@ -1,4 +1,4 @@
-import { CartProvider } from "@/providers";
+import { CartProvider } from "@/providers/CartProvider";
 import { Stack } from "expo-router";
 import React from "react";
 import "../global.css";
