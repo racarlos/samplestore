@@ -15,9 +15,9 @@ export default function Store() {
 	return (
 		<View className="flex-1 bg-gray-50 relative">
 			{/* Header */}
-			<View className="bg-white pt-12 pb-4 px-4 border-b border-gray-200">
+			<View className="bg-white p-4 border-b border-gray-200">
 				<Text className="text-2xl font-bold text-gray-900">Sample Store</Text>
-				<Text className="text-gray-600 mt-1">Discover amazing products</Text>
+				<Text className="text-gray-600 mt-1">Not so amazing products at not so great prices</Text>
 			</View>
 
 			<ScrollView className="flex-1 px-4">
@@ -31,18 +31,6 @@ export default function Store() {
 					/>
 				</View>
 
-				{/* Categories */}
-				<View className="mb-6">
-					<Text className="text-lg font-semibold text-gray-900 mb-3">Categories</Text>
-					<ScrollView horizontal showsHorizontalScrollIndicator={false} className="gap-2">
-						{["Electronics", "Clothing", "Books", "Home"].map((category) => (
-							<TouchableOpacity key={category} className="bg-blue-100 px-4 py-2 rounded-full mr-2">
-								<Text className="text-blue-800 font-medium">{category}</Text>
-							</TouchableOpacity>
-						))}
-					</ScrollView>
-				</View>
-
 				{/* Products Grid - Move to its own component ProductList.tsx */}
 				<View className="mb-6">
 					<Text className="text-lg font-semibold text-gray-900 mb-3">All Products</Text>
@@ -54,14 +42,14 @@ export default function Store() {
 								const cartQuantity = cart.items.find((item) => item.product.id === product.id)?.quantity || 0;
 								return (
 									<View key={product.id} className="w-[48%] bg-white p-3 rounded-lg border border-gray-200 mb-4">
-										<TouchableOpacity>
+										<View>
 											<Image source={{ uri: product.image }} className="h-36 rounded-lg mb-2" />
 
 											<Text numberOfLines={1} className="text-gray-900 font-medium">
 												{product.productName}
 											</Text>
 											<Text className="text-gray-900 font-bold text-lg">${product.price}</Text>
-										</TouchableOpacity>
+										</View>
 
 										<Text className="text-gray-600 mb-2">{product.stock} in stock</Text>
 

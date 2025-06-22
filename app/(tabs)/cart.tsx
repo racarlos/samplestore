@@ -76,8 +76,9 @@ export default function Cart() {
 	return (
 		<View className="flex-1 bg-gray-50">
 			{/* Header */}
-			<View className="bg-white p-2 border-b border-gray-400">
-				<Text className="text-2xl font-bold text-gray-900">Shopping Cart</Text>
+			<View className="bg-white p-4 border-b border-gray-200">
+				<Text className="text-2xl font-bold text-gray-900">Sample Cart</Text>
+				<Text className="text-gray-600 mt-1">Please buy so I can pay my bills</Text>
 			</View>
 
 			<>

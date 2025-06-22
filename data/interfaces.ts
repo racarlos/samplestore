@@ -2,7 +2,7 @@ export interface Order {
 	id: string;
 	items: Product[];
 	total: number;
-	promo: Promo;
+	discount: Discount;
 	dateCreated: number;
 }
 
@@ -25,8 +25,9 @@ export interface Cart {
 	total: number;
 }
 
-export interface Promo {
+export interface Discount {
 	code: string;
 	discount: number;
+	description: string;
 	discountType: "percentage" | "fixed";
 }
