@@ -3,13 +3,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React, { useMemo } from "react";
 import { Text, View } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 export default function TabLayout() {
 	const { cart } = useCartContext();
 
+	const insets = useSafeAreaInsets();
 	const totalCartQuantity = useMemo(() => cart.items.reduce((acc, item) => acc + item.quantity, 0), [cart.items]);
 
 	return (
-		<>
+		<SafeAreaView className="flex flex-1 bg-gray-50" edges={["top"]}>
 			<Tabs
 				screenOptions={{
 					tabBarActiveTintColor: "#3B82F6",
@@ -53,6 +55,6 @@ export default function TabLayout() {
 					}}
 				/>
 			</Tabs>
-		</>
+		</SafeAreaView>
 	);
 }

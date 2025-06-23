@@ -36,15 +36,15 @@ function CartItem({
 					<View className="flex-row items-center justify-between mt-2">
 						{/* Price and Stock */}
 						<View className="flex flex-col ">
-							<Text className="text-blue-600 font-bold">${(item.product.price * item.quantity).toFixed(2)}</Text>
+							<Text className="text-blue-600 font-bold">₱{(item.product.price * item.quantity).toFixed(2)}</Text>
 							<Text className="text-gray-600">{item.product.stock} in stock</Text>
 						</View>
 
 						{/* Quantity Controls */}
-						<View className="flex-row items-center justify-between mt-1 bg-gray-100 rounded-lg p-1">
+						<View className="flex-row items-center justify-between mt-1 bg-gray-100 rounded-lg p-1 gap-2">
 							{/* Decrement Quantity */}
 							<TouchableOpacity
-								className="w-8 h-8 bg-blue-600 rounded-full items-center justify-center"
+								className="w-10 h-10 bg-blue-600 rounded-full items-center justify-center"
 								onPress={() => {
 									if (item.quantity === 1) {
 										removeFromCart(item.product.id);
@@ -60,7 +60,7 @@ function CartItem({
 
 							{/* Increment Quantity */}
 							<TouchableOpacity
-								className={`w-8 h-8 bg-blue-600 rounded-full items-center justify-center ${
+								className={`w-10 h-10 bg-blue-600 rounded-full items-center justify-center ${
 									item.product.stock <= item.quantity ? "bg-gray-400" : ""
 								}`}
 								onPress={() => updateQuantity(item.product.id, item.quantity + 1)}
@@ -168,7 +168,7 @@ export default function Cart() {
 			</View>
 
 			<>
-				<ScrollView className="flex-1 px-4 py-2">
+				<ScrollView className="px-4 py-2">
 					{isCartEmpty ? (
 						<View className="flex-1 items-center justify-center py-20">
 							<Text className="text-xl text-gray-500 mb-4">Your cart is empty</Text>
@@ -177,7 +177,7 @@ export default function Cart() {
 							</TouchableOpacity>
 						</View>
 					) : (
-						<View className="space-y-2">
+						<View className="gap-2">
 							{cart.items.map((item) => (
 								<CartItem
 									key={item.product.id}
@@ -192,9 +192,9 @@ export default function Cart() {
 
 				{/* Cart Summary */}
 				{!isCartEmpty && (
-					<View className="flex-col">
+					<View className="flex-col bg-transparent">
 						{/* Discount Section */}
-						<View className=" bg-white p-2 m-2 rounded-lg bg-transparent">
+						<View className="bg-transparent">
 							{appliedDiscount ? (
 								// When discount is applied
 								<View className="bg-green-50 border border-green-200 rounded-lg p-3">
@@ -210,7 +210,7 @@ export default function Cart() {
 								</View>
 							) : (
 								// Discount Input
-								<View className="items-center">
+								<View className="mt-2 items-center px-2">
 									<View className="flex-row gap-2 w-full">
 										<TextInput
 											className="flex-1 border border-gray-300 rounded-lg p-2 text-gray-900 font-medium"

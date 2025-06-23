@@ -14,7 +14,7 @@ export default function Store() {
 	);
 
 	return (
-		<View className="flex-1 bg-gray-50 relative">
+		<View className="flex-1 bg-gray-50">
 			{/* Header */}
 			<View className="bg-white p-4 border-b border-gray-200">
 				<Text className="text-2xl font-bold text-gray-900">Sample Store</Text>
@@ -23,7 +23,7 @@ export default function Store() {
 
 			<ScrollView className="flex-1 px-4">
 				{/* Search Bar Placeholder */}
-				<View className="my-4 p-3 bg-white rounded-lg border border-gray-200">
+				<View className="my-2 px-2 bg-white rounded-lg border border-gray-200">
 					<TextInput
 						placeholder="Search products..."
 						value={search}
@@ -49,7 +49,7 @@ export default function Store() {
 											<Text numberOfLines={1} className="text-gray-900 font-medium">
 												{product.productName}
 											</Text>
-											<Text className="text-gray-900 font-bold text-lg">${product.price}</Text>
+											<Text className="text-blue-600 font-bold text-lg">₱{product.price}</Text>
 										</View>
 
 										<Text className="text-gray-600">{product.stock} in stock</Text>

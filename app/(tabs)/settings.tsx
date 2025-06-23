@@ -76,10 +76,9 @@ export default function Settings() {
 	return (
 		<View className="flex-1 bg-gray-50">
 			{/* Header */}
-			<View className="bg-white pt-12 pb-4 px-4 border-b border-gray-200">
+			<View className="bg-white py-4 px-4 border-b border-gray-200">
 				<Text className="text-2xl font-bold text-gray-900">Settings</Text>
 			</View>
-
 			<ScrollView className="flex-1 px-4 py-4">
 				{/* User Profile Section */}
 				<View className="bg-white p-4 rounded-lg border border-gray-200 mb-4">
