@@ -5,7 +5,7 @@ export const SEED_PRODUCTS: Product[] = [
 	{
 		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
-		image: "https://picsum.photos/300/300?random=1",
+		image: "https://fastly.picsum.photos/id/662/300/300.jpg?hmac=bnzTCyD_kx8Rv52mE9pVijWfprRjyAZkPJQTANw95cc",
 		description: faker.commerce.productDescription(),
 		price: Number(faker.commerce.price({ min: 29.99, max: 299.99 })),
 		stock: faker.number.int({ min: 1, max: 5 }),
@@ -13,7 +13,7 @@ export const SEED_PRODUCTS: Product[] = [
 	{
 		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
-		image: "https://picsum.photos/300/300?random=2",
+		image: "https://fastly.picsum.photos/id/652/300/300.jpg?hmac=WKkCaSCqwcDoWh5l7utyy5N2D_ADygxvzHHE7x1HZbQ",
 		description: faker.commerce.productDescription(),
 		price: Number(faker.commerce.price({ min: 29.99, max: 299.99 })),
 		stock: faker.number.int({ min: 1, max: 5 }),
@@ -21,7 +21,7 @@ export const SEED_PRODUCTS: Product[] = [
 	{
 		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
-		image: "https://picsum.photos/300/300?random=3",
+		image: "https://fastly.picsum.photos/id/177/300/300.jpg?hmac=iqXyonsAi67PWRf_09YhPkmp81Thf9Pch6MNvOkGiGo",
 		description: faker.commerce.productDescription(),
 		price: Number(faker.commerce.price({ min: 29.99, max: 299.99 })),
 		stock: faker.number.int({ min: 1, max: 5 }),
@@ -29,7 +29,7 @@ export const SEED_PRODUCTS: Product[] = [
 	{
 		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
-		image: "https://picsum.photos/300/300?random=4",
+		image: "https://fastly.picsum.photos/id/1042/300/300.jpg?hmac=ZsXTC7SJEqoeBaG83Ec52Q65QRGZ0gf4sNZj7r8UkHc",
 		description: faker.commerce.productDescription(),
 		price: Number(faker.commerce.price({ min: 29.99, max: 299.99 })),
 		stock: faker.number.int({ min: 1, max: 5 }),
@@ -37,7 +37,7 @@ export const SEED_PRODUCTS: Product[] = [
 	{
 		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
-		image: "https://picsum.photos/300/300?random=5",
+		image: "https://fastly.picsum.photos/id/868/300/300.jpg?hmac=FRXOODu7hXi9LJcWd_pVbtr7X8cRbO4mwPNLW8F3ZaY",
 		description: faker.commerce.productDescription(),
 		price: Number(faker.commerce.price({ min: 29.99, max: 299.99 })),
 		stock: faker.number.int({ min: 1, max: 5 }),
@@ -45,7 +45,7 @@ export const SEED_PRODUCTS: Product[] = [
 	{
 		id: faker.string.uuid(),
 		productName: faker.commerce.productName(),
-		image: "https://picsum.photos/300/300?random=6",
+		image: "https://fastly.picsum.photos/id/557/300/300.jpg?hmac=q-Dh0hXtF2G_8f90DwW3QAoUOxmXEWjacRQ2TARhJkQ",
 		description: faker.commerce.productDescription(),
 		price: Number(faker.commerce.price({ min: 29.99, max: 299.99 })),
 		stock: faker.number.int({ min: 1, max: 5 }),
