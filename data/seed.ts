@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Product } from "./interfaces";
+import { Cart, Order, Product } from "./interfaces";
 
 export const SEED_PRODUCTS: Product[] = [
 	{
@@ -52,31 +52,56 @@ export const SEED_PRODUCTS: Product[] = [
 	},
 ];
 
-// Dummy order history data
-export const DUMMY_ORDERS = [
+// Initial empty cart
+export const EMPTY_CART: Cart = {
+	items: [],
+	total: 0,
+};
+
+// Seed orders for fallback
+export const SEED_ORDERS: Order[] = [
 	{
-		id: "1",
-		date: "2024-01-15",
+		id: faker.string.uuid(),
+		items: [
+			{
+				product: SEED_PRODUCTS[0],
+				quantity: 2,
+			},
+		],
 		total: 1250.0,
+		discount: null,
+		dateCreated: new Date("2025-06-23").getTime(),
 		status: "Delivered",
-		items: 3,
-		orderNumber: "ORD-2024-001",
 	},
 	{
-		id: "2",
-		date: "2024-01-10",
+		id: faker.string.uuid(),
+		items: [
+			{
+				product: SEED_PRODUCTS[0],
+				quantity: 1,
+			},
+		],
 		total: 890.5,
+		discount: null,
+		dateCreated: new Date("2025-06-22").getTime(),
 		status: "Processing",
-		items: 2,
-		orderNumber: "ORD-2024-002",
 	},
 	{
-		id: "3",
-		date: "2024-01-05",
+		id: faker.string.uuid(),
+		items: [
+			{
+				product: SEED_PRODUCTS[0],
+				quantity: 1,
+			},
+			{
+				product: SEED_PRODUCTS[1],
+				quantity: 2,
+			},
+		],
 		total: 2100.0,
+		discount: null,
+		dateCreated: new Date("2025-06-21").getTime(),
 		status: "Delivered",
-		items: 4,
-		orderNumber: "ORD-2024-003",
 	},
 ];
 

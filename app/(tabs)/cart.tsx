@@ -1,8 +1,9 @@
 import { Discount } from "@/data/interfaces";
 import { useCartContext } from "@/providers/CartProvider";
+import { useOrdersContext } from "@/providers/OrdersProvider";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 // Hardcoded discount codes
 const DISCOUNT_CODES: Record<string, Discount> = {
@@ -12,6 +13,7 @@ const DISCOUNT_CODES: Record<string, Discount> = {
 
 export default function Cart() {
 	const { cart, removeFromCart, updateQuantity, clearCart, isLoading: isCartLoading } = useCartContext();
+	const { createOrder } = useOrdersContext();
 
 	const [discountCode, setDiscountCode] = useState("");
 	const [appliedDiscount, setAppliedDiscount] = useState<Discount | null>(null);
@@ -65,6 +67,25 @@ export default function Cart() {
 	const handleDiscountCodeChange = (text: string) => {
 		setDiscountCode(text.toUpperCase());
 		setDiscountError("");
+	};
+
+	// Handle checkout function
+	const handleCheckout = () => {
+		if (cart.items.length === 0) {
+			Alert.alert("Empty Cart", "Your cart is empty. Please add some items before checking out.");
+			return;
+		}
+
+		try {
+			// Create the order
+			const newOrder = createOrder(cart.items, finalTotal, appliedDiscount);
+
+			// Clear the cart
+			clearCart();
+		} catch (error) {
+			console.error("Error creating order:", error);
+			return;
+		}
 	};
 
 	isCartLoading && (
@@ -218,7 +239,7 @@ export default function Cart() {
 									<Text className="text-gray-800 text-center font-semibold text-sm">Clear Cart</Text>
 								</TouchableOpacity>
 
-								<TouchableOpacity className="flex-1 bg-blue-600 py-2 rounded-lg">
+								<TouchableOpacity className="flex-1 bg-blue-600 py-2 rounded-lg" onPress={handleCheckout}>
 									<Text className="text-white text-center font-semibold text-sm">Place Order</Text>
 								</TouchableOpacity>
 							</View>

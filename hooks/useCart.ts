@@ -1,17 +1,12 @@
 import { Cart, Product } from "@/data/interfaces";
+import { EMPTY_CART } from "@/data/seed";
 import { toFixed } from "@/utils/math-utilts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-// Initial empty cart
-const initialCart: Cart = {
-	items: [],
-	total: 0,
-};
-
 export function useCart() {
 	// Local state for cart
-	const [cart, setCart] = useState<Cart>(initialCart);
+	const [cart, setCart] = useState<Cart>(EMPTY_CART);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isInitialized, setIsInitialized] = useState(false);
 
@@ -19,29 +14,21 @@ export function useCart() {
 
 	console.log("Cart Item Count: ", itemCount);
 
-	// Connect to AsyncStorage
-	// const {
-	// 	storedValue: storedCart,
-	// 	setValue: setStoredCart,
-	// 	isLoading: isStorageLoading,
-	// } = useAsyncStorage<Cart>("cart", initialCart);
-
 	// Load cart from AsyncStorage on mount
 	useEffect(() => {
 		const loadCart = async () => {
 			try {
-				console.log("Loading cart from AsyncStorage");
-				const item = await AsyncStorage.getItem("cart");
+				const storedCart = await AsyncStorage.getItem("cart");
 
-				if (item) {
-					const value = JSON.parse(item);
+				if (storedCart) {
+					const value = JSON.parse(storedCart);
 					setCart(value);
 				} else {
-					setCart(initialCart);
+					setCart(EMPTY_CART);
 				}
 			} catch (error) {
 				console.error("Error loading cart from AsyncStorage:", error);
-				setCart(initialCart);
+				setCart(EMPTY_CART);
 			} finally {
 				setIsLoading(false);
 				setIsInitialized(true);
@@ -53,8 +40,9 @@ export function useCart() {
 
 	// Save cart to AsyncStorage when it changes (but not during initial load)
 	useEffect(() => {
+		// Don't save during initial load
 		if (!isInitialized) {
-			return; // Don't save during initial load
+			return;
 		}
 
 		const saveCart = async () => {
@@ -120,7 +108,7 @@ export function useCart() {
 	const clearCart = async () => {
 		try {
 			await AsyncStorage.removeItem("cart");
-			setCart(initialCart);
+			setCart(EMPTY_CART);
 		} catch (error) {
 			console.error("Error clearing cart from AsyncStorage:", error);
 		}

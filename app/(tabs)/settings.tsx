@@ -1,6 +1,7 @@
-import { DISCOUNT_CODES, DUMMY_ORDERS } from "@/data/seed";
+import { DISCOUNT_CODES } from "@/data/seed";
 import { useProducts } from "@/hooks/useProducts";
 import { useCartContext } from "@/providers/CartProvider";
+import { useOrdersContext } from "@/providers/OrdersProvider";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
@@ -9,6 +10,7 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 export default function Settings() {
 	const { clearCart } = useCartContext();
 	const { resetToSeedData } = useProducts();
+	const { orders, clearOrders } = useOrdersContext();
 
 	const [isClearing, setIsClearing] = useState(false);
 	const [expandedSections, setExpandedSections] = useState<{
@@ -29,6 +31,7 @@ export default function Settings() {
 			console.log("AsyncStorage cleared");
 
 			await clearCart();
+			await clearOrders();
 			await resetToSeedData();
 		} catch (error) {
 			console.error("Error clearing data:", error);
@@ -168,37 +171,59 @@ export default function Settings() {
 								<View className="bg-gray-50 border-t border-gray-100">
 									<View className="p-4">
 										<Text className="text-sm font-semibold text-gray-700 mb-3">Recent Orders</Text>
-										{DUMMY_ORDERS.map((order, idx) => (
-											<View
-												key={order.id}
-												className={`bg-white p-3 rounded-lg border border-gray-200 ${idx > 0 ? "mt-2" : ""}`}
-											>
-												<View className="flex-row justify-between items-start">
-													<View className="flex-1">
-														<Text className="font-semibold text-gray-900">{order.orderNumber}</Text>
-														<Text className="text-sm text-gray-600 mt-1">
-															{new Date(order.date).toLocaleDateString()} • {order.items} items
-														</Text>
-														<View className="flex-row items-center mt-1">
-															<View
-																className={`px-2 py-1 rounded-full ${
-																	order.status === "Delivered" ? "bg-green-100" : "bg-yellow-100"
-																}`}
-															>
-																<Text
-																	className={`text-xs font-semibold ${
-																		order.status === "Delivered" ? "text-green-800" : "text-yellow-800"
-																	}`}
-																>
-																	{order.status}
+										{orders.length === 0 ? (
+											<View className="bg-white p-4 rounded-lg border border-gray-200">
+												<Text className="text-gray-500 text-center">No orders yet</Text>
+											</View>
+										) : (
+											orders.map((order, idx) => {
+												const totalItems = order.items.reduce((acc, item) => acc + item.quantity, 0);
+												return (
+													<View
+														key={order.id}
+														className={`bg-white p-3 rounded-lg border border-gray-200 ${idx > 0 ? "mt-2" : ""}`}
+													>
+														<View className="flex-row justify-between items-start">
+															<View className="flex-1">
+																<Text className="font-semibold text-gray-900">{order.id}</Text>
+																<Text className="text-sm text-gray-600 mt-1">
+																	{new Date(order.dateCreated).toLocaleDateString()} • {totalItems || "N/A"} items
 																</Text>
+																<View className="flex-row items-center mt-1">
+																	<View
+																		className={`px-2 py-1 rounded-full ${
+																			order.status === "Delivered"
+																				? "bg-green-100"
+																				: order.status === "Cancelled"
+																					? "bg-red-100"
+																					: "bg-yellow-100"
+																		}`}
+																	>
+																		<Text
+																			className={`text-xs font-semibold ${
+																				order.status === "Delivered"
+																					? "text-green-800"
+																					: order.status === "Cancelled"
+																						? "text-red-800"
+																						: "text-yellow-800"
+																			}`}
+																		>
+																			{order.status}
+																		</Text>
+																	</View>
+																</View>
+																{order.discount && (
+																	<Text className="text-xs text-green-600 mt-1">
+																		Discount applied: {order.discount.code}
+																	</Text>
+																)}
 															</View>
+															<Text className="font-bold text-gray-900">₱{order.total.toFixed(2)}</Text>
 														</View>
 													</View>
-													<Text className="font-bold text-gray-900">₱{order.total.toFixed(2)}</Text>
-												</View>
-											</View>
-										))}
+												);
+											})
+										)}
 									</View>
 								</View>
 							)}

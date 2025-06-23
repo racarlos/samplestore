@@ -1,9 +1,10 @@
 export interface Order {
 	id: string;
-	items: Product[];
+	items: CartItem[];
 	total: number;
-	discount: Discount;
+	discount: Discount | null;
 	dateCreated: number;
+	status: "Processing" | "Delivered" | "Cancelled";
 }
 
 export interface Product {

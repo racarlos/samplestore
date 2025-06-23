@@ -1,50 +1,54 @@
 import { Product } from "@/data/interfaces";
 import { SEED_PRODUCTS } from "@/data/seed";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useState } from "react";
-import { useAsyncStorage } from "./useAsyncStorage";
 
 export function useProducts() {
 	const [products, setProducts] = useState<Product[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const [isInitialized, setIsInitialized] = useState(false);
 
-	const {
-		storedValue: storedProducts,
-		setValue: setStoredProducts,
-		isLoading,
-	} = useAsyncStorage<Product[]>("products", []);
-
-	// Initialize products from storage or seed data
+	// Load products from AsyncStorage on mount
 	useEffect(() => {
-		if (!isLoading && !isInitialized) {
-			if (storedProducts.length > 0) {
-				setProducts(storedProducts);
-			} else {
-				// No products in storage, use seed data
+		const loadProducts = async () => {
+			try {
+				const storedProducts = await AsyncStorage.getItem("products");
+
+				if (storedProducts) {
+					const value = JSON.parse(storedProducts);
+					setProducts(value);
+				} else {
+					setProducts(SEED_PRODUCTS);
+				}
+			} catch (error) {
+				console.error("Error loading products from AsyncStorage:", error);
 				setProducts(SEED_PRODUCTS);
-				setStoredProducts(SEED_PRODUCTS);
+			} finally {
+				setIsLoading(false);
+				setIsInitialized(true);
 			}
-			setIsInitialized(true);
-		}
-	}, [isLoading, storedProducts, isInitialized, setStoredProducts]);
+		};
 
-	// Sync to storage when products change (but not during initialization)
+		loadProducts();
+	}, []);
+
+	// Save products to AsyncStorage when they change (but not during initial load)
 	useEffect(() => {
-		if (isInitialized && !isLoading) {
-			setStoredProducts(products);
+		// Don't save during initial load
+		if (!isInitialized) {
+			return;
 		}
-	}, [products, isInitialized, isLoading, setStoredProducts]);
 
-	const addProduct = useCallback((product: Product) => {
-		setProducts((current) => [...current, product]);
-	}, []);
+		const saveProducts = async () => {
+			try {
+				await AsyncStorage.setItem("products", JSON.stringify(products));
+			} catch (error) {
+				console.error("Error saving products to AsyncStorage:", error);
+			}
+		};
 
-	const updateProduct = useCallback((updatedProduct: Product) => {
-		setProducts((current) => current.map((product) => (product.id === updatedProduct.id ? updatedProduct : product)));
-	}, []);
-
-	const deleteProduct = useCallback((productId: string) => {
-		setProducts((current) => current.filter((product) => product.id !== productId));
-	}, []);
+		saveProducts();
+	}, [products, isInitialized]);
 
 	const getProduct = useCallback(
 		(productId: string) => {
@@ -54,17 +58,17 @@ export function useProducts() {
 	);
 
 	const resetToSeedData = useCallback(async () => {
-		setProducts(SEED_PRODUCTS);
-		await setStoredProducts(SEED_PRODUCTS);
-	}, [setStoredProducts]);
+		try {
+			await AsyncStorage.setItem("products", JSON.stringify(SEED_PRODUCTS));
+			setProducts(SEED_PRODUCTS);
+		} catch (error) {
+			console.error("Error resetting products to seed data:", error);
+		}
+	}, []);
 
 	return {
 		products,
-		isLoading: !isInitialized || isLoading,
-		addProduct,
-		updateProduct,
-		deleteProduct,
-		getProduct,
+		isLoading,
 		resetToSeedData,
 	};
 }
