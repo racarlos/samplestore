@@ -1,9 +1,10 @@
+import CartItem from "@/components/CartItem";
 import { Discount } from "@/data/interfaces";
 import { useCartContext } from "@/providers/CartProvider";
 import { useOrdersContext } from "@/providers/OrdersProvider";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 // Hardcoded discount codes
 const DISCOUNT_CODES: Record<string, Discount> = {
@@ -12,7 +13,7 @@ const DISCOUNT_CODES: Record<string, Discount> = {
 };
 
 export default function Cart() {
-	const { cart, removeFromCart, updateQuantity, clearCart, isLoading: isCartLoading } = useCartContext();
+	const { cart, clearCart, isLoading: isCartLoading } = useCartContext();
 	const { createOrder } = useOrdersContext();
 
 	const [discountCode, setDiscountCode] = useState("");
@@ -65,7 +66,7 @@ export default function Cart() {
 
 	// Handle discount code input change
 	const handleDiscountCodeChange = (text: string) => {
-		setDiscountCode(text.toUpperCase());
+		setDiscountCode(text.toUpperCase().trim());
 		setDiscountError("");
 	};
 
@@ -114,53 +115,7 @@ export default function Cart() {
 					) : (
 						<View className="space-y-4">
 							{cart.items.map((item) => (
-								<View key={item.product.id} className="bg-white p-2 rounded-lg border border-gray-200">
-									<View className="flex-row justify-between items-start h-full gap-4">
-										{/* Image */}
-										<View className="w-28 h-28">
-											<Image source={{ uri: item.product.image }} className="w-full h-full rounded-lg" />
-										</View>
-
-										<View className="flex-col flex-1 gap-1 h-full justify-center ">
-											<View className="gap-1">
-												<Text className="font-semibold  text-gray-900">{item.product.productName}</Text>
-												<Text className="text-blue-600 font-bold">
-													${(item.product.price * item.quantity).toFixed(2)}
-												</Text>
-												<Text className="text-gray-600 mb-2">{item.product.stock} in stock</Text>
-											</View>
-
-											{/* Quantity Controls */}
-											<View className="flex-row items-center rounded-lg w-a">
-												{/* Decrement Quantity */}
-												<TouchableOpacity
-													className="w-8 h-8 bg-blue-600 rounded-full items-center justify-center"
-													onPress={() => {
-														if (item.quantity === 1) {
-															removeFromCart(item.product.id);
-														} else {
-															updateQuantity(item.product.id, item.quantity - 1);
-														}
-													}}
-												>
-													<Text className="text-white font-bold">-</Text>
-												</TouchableOpacity>
-												<Text className="mx-3 font-medium text-gray-900">{item.quantity}</Text>
-
-												{/* Increment Quantity */}
-												<TouchableOpacity
-													className={`w-8 h-8 bg-blue-600 rounded-full items-center justify-center ${
-														item.product.stock <= item.quantity ? "bg-gray-400" : ""
-													}`}
-													onPress={() => updateQuantity(item.product.id, item.quantity + 1)}
-													disabled={item.product.stock <= item.quantity}
-												>
-													<Text className="text-white font-bold">+</Text>
-												</TouchableOpacity>
-											</View>
-										</View>
-									</View>
-								</View>
+								<CartItem key={item.product.id} item={item} />
 							))}
 						</View>
 					)}
