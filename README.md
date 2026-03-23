@@ -92,5 +92,3 @@ The app comes with:
 
 - Uses faker.js for generating demo data
 - All data is stored locally (no backend required)
-- Built with TypeScript for type safety
-- Follows React Native best practices
